@@ -3,21 +3,21 @@ package main
 /*
  * @Date: 2020-11-20 20:26:52
  * @LastEditors: kanoyami
- * @LastEditTime: 2020-11-20 21:07:58
+ * @LastEditTime: 2020-11-20 23:05:03
  */
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/streadway/amqp"
 )
 
-var RabbitMqConn = nil
+// RabbitMqChannel RabbitMqChannel
+var RabbitMqChannel *amqp.Channel = nil
 
 func failOnMqError(err error, msg string) {
 	if err != nil {
-		log.Fatalf("%s: %s", msg, err)
+		lPrintErr("%s: %s", msg, err)
 	}
 }
 
@@ -26,22 +26,21 @@ func SetMqchannel(name string, pwd string, ip string, port string) *amqp.Channel
 	RabbitURL := fmt.Sprintf("amqp://%s:%s@%s:%s/", name, pwd, ip, port)
 	mqConn, err := amqp.Dial(RabbitURL)
 	failOnMqError(err, "Failed to connect to RabbitMQ")
-	defer mqConn.Close()
 	ch, chErr := mqConn.Channel()
 	failOnMqError(chErr, "Failed to open a channel")
-	defer ch.Close()
+	lPrintln("RabbitMq连接成功")
 	return ch
 }
 
 // PublishChannel publicchannel
 func PublishChannel(ch *amqp.Channel, info string) {
 	q, err := ch.QueueDeclare(
-		"aclive_record_final", // name
-		false,                 // durable
-		false,                 // delete when unused
-		false,                 // exclusive
-		false,                 // no-wait
-		nil,                   // arguments
+		"aclive_record", // name
+		false,           // durable
+		false,           // delete when unused
+		false,           // exclusive
+		false,           // no-wait
+		nil,             // arguments
 	)
 	failOnMqError(err, "Failed to declare a queue")
 
@@ -55,5 +54,6 @@ func PublishChannel(ch *amqp.Channel, info string) {
 			ContentType: "text/plain",
 			Body:        []byte(body),
 		})
+	lPrintln("mqinfo:" + info)
 	failOnMqError(err, "Failed to publish a message")
 }

@@ -215,7 +215,7 @@ func initialize() {
 		}
 	}
 	if config.Rabbitmq {
-		RabbitMqConn = SetMqchannel(config.RabbitmqConfig.User, config.RabbitmqConfig.Password, config.RabbitmqConfig.IP, config.RabbitmqConfig.Port)
+		RabbitMqChannel = SetMqchannel(config.RabbitmqConfig.User, config.RabbitmqConfig.Password, config.RabbitmqConfig.IP, config.RabbitmqConfig.Port)
 	}
 }
 

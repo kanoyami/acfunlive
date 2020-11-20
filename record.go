@@ -148,6 +148,9 @@ func (s streamer) recordLive(danmu bool) {
 	if *isListen {
 		lPrintln("如果想提前结束下载" + s.longID() + "的直播视频，运行 stoprecord " + s.itoa())
 	}
+	if config.Rabbitmq {
+		PublishChannel(RabbitMqChannel, "startFile_$"+filename)
+	}
 	if s.Notify.NotifyRecord {
 		if danmu {
 			desktopNotify("开始下载" + s.Name + "的直播视频和弹幕")
@@ -218,6 +221,9 @@ func (s streamer) recordLive(danmu bool) {
 	}
 
 	lPrintln(s.longID() + "的直播视频下载已经结束")
+	if config.Rabbitmq {
+		PublishChannel(RabbitMqChannel, "endFile_$"+filename)
+	}
 	if s.Notify.NotifyRecord {
 		if danmu {
 			desktopNotify(s.Name + "的直播视频和弹幕下载已经结束")
