@@ -53,12 +53,21 @@ var streamers struct {
 
 // 设置数据
 type configData struct {
-	Source    string    `json:"source"`    // 直播源，有hls和flv两种
-	Output    string    `json:"output"`    // 直播下载视频格式的后缀名
-	WebPort   int       `json:"webPort"`   // web API的本地端口
-	Directory string    `json:"directory"` // 直播视频和弹幕下载结束后会被移动到该文件夹，会被live.json里的设置覆盖
-	Acfun     acfunUser `json:"acfun"`     // AcFun帐号相关
-	Mirai     miraiData `json:"mirai"`     // Mirai相关设置
+	Source         string         `json:"source"`    // 直播源，有hls和flv两种
+	Output         string         `json:"output"`    // 直播下载视频格式的后缀名
+	WebPort        int            `json:"webPort"`   // web API的本地端口
+	Directory      string         `json:"directory"` // 直播视频和弹幕下载结束后会被移动到该文件夹，会被live.json里的设置覆盖
+	Acfun          acfunUser      `json:"acfun"`     // AcFun帐号相关
+	Mirai          miraiData      `json:"mirai"`     // Mirai相关设置
+	Rabbitmq       bool           `json:"rabbitmq"`
+	RabbitmqConfig rabbitmqConfig `json:"rabbitmqConfig"`
+}
+
+type rabbitmqConfig struct {
+	IP       string `json:"ip"`
+	Port     string `json:"port"`
+	User     string `json:"user"`
+	Password string `json:"password"`
 }
 
 // 默认设置
@@ -66,6 +75,7 @@ var config = configData{
 	Source:    "flv",
 	Output:    "mp4",
 	WebPort:   51880,
+	Rabbitmq:  false,
 	Directory: "",
 	Acfun: acfunUser{
 		Account:  "",
@@ -78,11 +88,17 @@ var config = configData{
 		SendQQ:        []int64{},
 		SendQQGroup:   []int64{},
 	},
+	RabbitmqConfig: rabbitmqConfig{
+		IP:       "",
+		Port:     "",
+		User:     "",
+		Password: "",
+	},
 }
 
 // AcFun用户帐号数据
 type acfunUser struct {
-	Account  string `json:"account"`  // AcFun帐号邮箱或手机号
+	Account  string `json:"account"`
 	Password string `json:"password"` // AcFun帐号密码
 }
 

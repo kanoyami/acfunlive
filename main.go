@@ -214,6 +214,9 @@ func initialize() {
 			lPrintln("登陆AcFun帐号成功")
 		}
 	}
+	if config.Rabbitmq {
+		RabbitMqConn = SetMqchannel(config.RabbitmqConfig.User, config.RabbitmqConfig.Password, config.RabbitmqConfig.IP, config.RabbitmqConfig.Port)
+	}
 }
 
 func main() {
